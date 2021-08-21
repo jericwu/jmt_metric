@@ -37,6 +37,8 @@ public interface SimConstants {
 
 	public static final int ARRIVAL_METRIC = 100;
 
+	public static final int DEPARTURE_METRIC = 101;
+
 	/** Measure identifier: queue time of the node */
 	public static final int QUEUE_TIME = 1;
 
@@ -126,6 +128,8 @@ public interface SimConstants {
 	public static final int LIST_NUMBER_OF_JOBS = 23;
 
 	public static final int LIST_ARRIVAL_METRIC = 900;
+
+	public static final int LIST_DEPARTURE_METRIC = 901;
 
 	/** Measure identifier: response time of the list */
 	public static final int LIST_RESPONSE_TIME = 24;

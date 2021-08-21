@@ -46,6 +46,7 @@ public class ResultsModel implements MeasureDefinition {
 	private TempMeasure[] measures; // An array with all TempMeasures
 	private Vector<Integer> queueLength = new Vector<Integer>();
 	private Vector<Integer> arrivalMetric = new Vector<Integer>();
+	private Vector<Integer> departureMetric = new Vector<Integer>();
 	private Vector<Integer> queueTime = new Vector<Integer>();
 	private Vector<Integer> responseTime = new Vector<Integer>();
 	private Vector<Integer> residenceTime = new Vector<Integer>();
@@ -117,6 +118,8 @@ public class ResultsModel implements MeasureDefinition {
 				queueLength.add(new Integer(i));
 			} else if (type.equals(SimulationDefinition.MEASURE_AM)) {
 				arrivalMetric.add(new Integer(i));
+			} else if (type.equals(SimulationDefinition.MEASURE_DM)) {
+				departureMetric.add(new Integer(i));
 			} else if (type.equals(SimulationDefinition.MEASURE_QT)) {
 				queueTime.add(new Integer(i));
 			} else if (type.equals(SimulationDefinition.MEASURE_RP)) {
@@ -395,6 +398,16 @@ public class ResultsModel implements MeasureDefinition {
 		}
 		return tmp;
 	}
+
+	@Override
+	public int[] getDepartureMetricMeasures() {
+		int[] tmp = new int[departureMetric.size()];
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = departureMetric.get(i).intValue();
+		}
+		return tmp;
+	}
+
 	/**
 	 * Returns an array with the measureIndex of every queue time measure
 	 * @return an array with measures' index

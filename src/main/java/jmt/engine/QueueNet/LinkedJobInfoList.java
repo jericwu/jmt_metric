@@ -93,9 +93,13 @@ public class LinkedJobInfoList implements JobInfoList {
 
 	protected Measure arrivalMetric;
 
+	protected Measure departureMetric;
+
 	protected Measure queueLengthPerClass[];
 
 	protected Measure arrivalMetricPerClass[];
+
+	protected Measure departureMetricPerClass[];
 
 	protected Measure responseTime;
 
@@ -510,6 +514,7 @@ public class LinkedJobInfoList implements JobInfoList {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
 		updateArrivalMetric(jobInfo);
+		updateDepartureMetric(jobInfo);
 		updateUtilization(jobInfo);
 		updateUtilizationJoin(jobInfo);
 		jobsIn++;
@@ -534,6 +539,7 @@ public class LinkedJobInfoList implements JobInfoList {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
 		updateArrivalMetric(jobInfo);
+		updateDepartureMetric(jobInfo);
 		updateUtilization(jobInfo);
 		updateUtilizationJoin(jobInfo);
 		updateThroughput(jobInfo);
@@ -606,6 +612,7 @@ public class LinkedJobInfoList implements JobInfoList {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
 		updateArrivalMetric(jobInfo);
+		updateDepartureMetric(jobInfo);
 		updateResponseTime(jobInfo);
 		updateResidenceTime(jobInfo);
 		updateUtilization(jobInfo);
@@ -664,6 +671,18 @@ public class LinkedJobInfoList implements JobInfoList {
 			arrivalMetricPerClass[jobClass.getId()] = measurement;
 		} else {
 			arrivalMetric = measurement;
+		}
+	}
+
+	@Override
+	public void analyzeDepartureMetric(JobClass jobClass, Measure measurement) {
+		if (jobClass != null) {
+			if (departureMetricPerClass == null) {
+				departureMetricPerClass = new Measure[numberOfJobClasses];
+			}
+			departureMetricPerClass[jobClass.getId()] = measurement;
+		} else {
+			departureMetric = measurement;
 		}
 	}
 
@@ -876,6 +895,20 @@ public class LinkedJobInfoList implements JobInfoList {
 		}
 		if (arrivalMetric != null) {
 			arrivalMetric.update(list.size(), getTime() - getLastModifyTime());
+		}
+	}
+
+	protected void updateDepartureMetric(JobInfo jobInfo) {
+		if (departureMetricPerClass != null) {
+			JobClass jobClass = jobInfo.getJob().getJobClass();
+			int c = jobClass.getId();
+			Measure m = departureMetricPerClass[c];
+			if (m != null) {
+				m.update(listPerClass[c].size(), getTime() - getLastModifyTimePerClass(jobClass));
+			}
+		}
+		if (departureMetric != null) {
+			departureMetric.update(list.size(), getTime() - getLastModifyTime());
 		}
 	}
 

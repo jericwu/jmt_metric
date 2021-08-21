@@ -39,6 +39,8 @@ public abstract class EngineUtils {
 				return SimulationDefinition.MEASURE_QL;
 			case SimConstants.ARRIVAL_METRIC:
 				return SimulationDefinition.MEASURE_AM;
+			case SimConstants.DEPARTURE_METRIC:
+				return SimulationDefinition.MEASURE_DM;
 			case SimConstants.QUEUE_TIME:
 				return SimulationDefinition.MEASURE_QT;
 			case SimConstants.RESPONSE_TIME:
@@ -109,6 +111,8 @@ public abstract class EngineUtils {
 			return SimConstants.QUEUE_LENGTH;
 		} else if (type.equals(SimulationDefinition.MEASURE_AM)) {
 			return SimConstants.ARRIVAL_METRIC;
+		} else if (type.equals(SimulationDefinition.MEASURE_DM)) {
+			return SimConstants.DEPARTURE_METRIC;
 		} else if (type.equals(SimulationDefinition.MEASURE_QT)) {
 			return SimConstants.QUEUE_TIME;
 		} else if (type.equals(SimulationDefinition.MEASURE_RP)) {

@@ -337,6 +337,9 @@ public class NetNode extends SimEntity {
 		case SimConstants.LIST_ARRIVAL_METRIC:
 			jobsList.analyzeArrivalMetric(jobClass, measurement);
 			break;
+		case SimConstants.LIST_DEPARTURE_METRIC:
+			jobsList.analyzeDepartureMetric(jobClass, measurement);
+			break;
 		case SimConstants.LIST_RESPONSE_TIME:
 			jobsList.analyzeResponseTime(jobClass, measurement);
 			break;

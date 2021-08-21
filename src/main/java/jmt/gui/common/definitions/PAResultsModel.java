@@ -415,6 +415,11 @@ public class PAResultsModel implements MeasureDefinition {
 		return new int[0];
 	}
 
+	@Override
+	public int[] getDepartureMetricMeasures() {
+		return new int[0];
+	}
+
 	public int[] getQueueTimeMeasures() {
 		return getTmpArray(queueTime);
 	}

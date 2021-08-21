@@ -54,6 +54,8 @@ public interface SimulationDefinition {
 
 	public static final String MEASURE_AM = "Arrival Metric";
 
+	public static final String MEASURE_DM = "Departure Metric";
+
 	/**Code for queue time measure*/
 	public static final String MEASURE_QT = "Queue Time";
 	/**Code for response time measure*/
