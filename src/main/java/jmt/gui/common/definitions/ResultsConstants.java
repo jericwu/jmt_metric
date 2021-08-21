@@ -65,6 +65,9 @@ public interface ResultsConstants {
 	public static final String DESCRIPTION_QUEUE_LENGTH = HTML_START + HTML_FONT_TITLE + "Number of Customers" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average number of customers for each selected class at each selected station." + HTML_FONT_NOR_END + HTML_END;
 
+	public static final String DESCRIPTION_ARRIVAL_METRIC = HTML_START + HTML_FONT_TITLE + "Arrival Metric" + HTML_FONT_TIT_END + HTML_FONT_NORM
+			+ "Number of jobs upon arrival" + HTML_FONT_NOR_END + HTML_END;
+
 	public static final String DESCRIPTION_QUEUE_TIME = HTML_START + HTML_FONT_TITLE + "Queue Time" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average queue time for each selected class at each selected station." + HTML_FONT_NOR_END + HTML_END;
 

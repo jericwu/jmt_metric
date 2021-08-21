@@ -51,6 +51,9 @@ public interface SimulationDefinition {
 
 	/**Code for queue length measure*/
 	public static final String MEASURE_QL = "Number of Customers";
+
+	public static final String MEASURE_AM = "Arrival Metric";
+
 	/**Code for queue time measure*/
 	public static final String MEASURE_QT = "Queue Time";
 	/**Code for response time measure*/

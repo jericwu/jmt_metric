@@ -123,6 +123,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 	protected static final String[] measureTypes = new String[] {
 			"------ Select an index  ------",
 			SimulationDefinition.MEASURE_QL,
+			SimulationDefinition.MEASURE_AM,
 			//SimulationDefinition.MEASURE_BS,			
 			SimulationDefinition.MEASURE_QT,
 			SimulationDefinition.MEASURE_RP,
@@ -417,6 +418,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 				return new ButtonCellEditor(deleteButton);
 			} else if (column == 2) {
 				if (measure.type.equals(SimulationDefinition.MEASURE_QL)
+						|| measure.type.equals(SimulationDefinition.MEASURE_AM)
 						|| measure.type.equals(SimulationDefinition.MEASURE_RP)
 						|| measure.type.equals(SimulationDefinition.MEASURE_DR)
 						|| measure.type.equals(SimulationDefinition.MEASURE_RR)
@@ -625,6 +627,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 
 	private Measure getImplicitMeasure(Object key, String type, Object stationKey, Object classKey) {
 		if (type.equals(SimulationDefinition.MEASURE_QL)
+				|| type.equals(SimulationDefinition.MEASURE_AM)
 				|| type.equals(SimulationDefinition.MEASURE_RP)
 				|| type.equals(SimulationDefinition.MEASURE_X)
 				|| type.equals(SimulationDefinition.MEASURE_DR)

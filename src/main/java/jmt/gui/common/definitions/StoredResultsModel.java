@@ -218,6 +218,11 @@ public class StoredResultsModel implements MeasureDefinition {
 		return getTmpArray(queueLength);
 	}
 
+	@Override
+	public int[] getArrivalMetricMeasures() {
+		return new int[0];
+	}
+
 	public int[] getQueueTimeMeasures() {
 		return getTmpArray(queueTime);
 	}

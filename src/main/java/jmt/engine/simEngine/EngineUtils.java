@@ -37,6 +37,8 @@ public abstract class EngineUtils {
 		switch (type) {
 			case SimConstants.QUEUE_LENGTH:
 				return SimulationDefinition.MEASURE_QL;
+			case SimConstants.ARRIVAL_METRIC:
+				return SimulationDefinition.MEASURE_AM;
 			case SimConstants.QUEUE_TIME:
 				return SimulationDefinition.MEASURE_QT;
 			case SimConstants.RESPONSE_TIME:
@@ -105,6 +107,8 @@ public abstract class EngineUtils {
 	static public int decodeMeasureType(String type) {
 		if (type.equals(SimulationDefinition.MEASURE_QL)) {
 			return SimConstants.QUEUE_LENGTH;
+		} else if (type.equals(SimulationDefinition.MEASURE_AM)) {
+			return SimConstants.ARRIVAL_METRIC;
 		} else if (type.equals(SimulationDefinition.MEASURE_QT)) {
 			return SimConstants.QUEUE_TIME;
 		} else if (type.equals(SimulationDefinition.MEASURE_RP)) {

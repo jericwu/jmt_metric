@@ -262,6 +262,8 @@ public interface JobInfoList {
 	 */
 	public abstract void analyzeQueueLength(JobClass jobClass, Measure measurement);
 
+	public abstract void analyzeArrivalMetric(JobClass jobClass, Measure measurement);
+
 	/**
 	 * Analyzes the response time for the specified job class.
 	 * jobClass Specified job class. If null, analysis will be job class independent.

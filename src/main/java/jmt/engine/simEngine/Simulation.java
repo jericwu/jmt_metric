@@ -480,6 +480,9 @@ public class Simulation {
 					case SimConstants.QUEUE_LENGTH:
 						netNodes[nodePosition].analyze(SimConstants.LIST_NUMBER_OF_JOBS, jClass, ms.getMeasure());
 						break;
+					case SimConstants.ARRIVAL_METRIC:
+						netNodes[nodePosition].analyze(SimConstants.LIST_ARRIVAL_METRIC, jClass, ms.getMeasure());
+						break;
 					case SimConstants.QUEUE_TIME:
 						if (netNodes[nodePosition].getSection(NodeSection.SERVICE) instanceof PSServer) {
 							netNodes[nodePosition].getSection(NodeSection.SERVICE).analyze(SimConstants.LIST_RESIDENCE_TIME, jClass, ms.getMeasure());

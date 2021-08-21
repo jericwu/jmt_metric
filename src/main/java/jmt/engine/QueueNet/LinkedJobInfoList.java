@@ -91,7 +91,11 @@ public class LinkedJobInfoList implements JobInfoList {
 
 	protected Measure queueLength;
 
+	protected Measure arrivalMetric;
+
 	protected Measure queueLengthPerClass[];
+
+	protected Measure arrivalMetricPerClass[];
 
 	protected Measure responseTime;
 
@@ -505,6 +509,7 @@ public class LinkedJobInfoList implements JobInfoList {
 	protected void updateAdd(JobInfo jobInfo) {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
+		updateArrivalMetric(jobInfo);
 		updateUtilization(jobInfo);
 		updateUtilizationJoin(jobInfo);
 		jobsIn++;
@@ -528,6 +533,7 @@ public class LinkedJobInfoList implements JobInfoList {
 	public void removeOnly(JobInfo jobInfo) {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
+		updateArrivalMetric(jobInfo);
 		updateUtilization(jobInfo);
 		updateUtilizationJoin(jobInfo);
 		updateThroughput(jobInfo);
@@ -599,6 +605,7 @@ public class LinkedJobInfoList implements JobInfoList {
 	protected void doRemove(JobInfo jobInfo, int position, int perClassPosition) {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
+		updateArrivalMetric(jobInfo);
 		updateResponseTime(jobInfo);
 		updateResidenceTime(jobInfo);
 		updateUtilization(jobInfo);
@@ -645,6 +652,18 @@ public class LinkedJobInfoList implements JobInfoList {
 			queueLengthPerClass[jobClass.getId()] = measurement;
 		} else {
 			queueLength = measurement;
+		}
+	}
+
+	@Override
+	public void analyzeArrivalMetric(JobClass jobClass, Measure measurement) {
+		if (jobClass != null) {
+			if (arrivalMetricPerClass == null) {
+				arrivalMetricPerClass = new Measure[numberOfJobClasses];
+			}
+			arrivalMetricPerClass[jobClass.getId()] = measurement;
+		} else {
+			arrivalMetric = measurement;
 		}
 	}
 
@@ -843,6 +862,20 @@ public class LinkedJobInfoList implements JobInfoList {
 		}
 		if (queueLength != null) {
 			queueLength.update(list.size(), getTime() - getLastModifyTime());
+		}
+	}
+
+	protected void updateArrivalMetric(JobInfo jobInfo) {
+		if (arrivalMetricPerClass != null) {
+			JobClass jobClass = jobInfo.getJob().getJobClass();
+			int c = jobClass.getId();
+			Measure m = arrivalMetricPerClass[c];
+			if (m != null) {
+				m.update(listPerClass[c].size(), getTime() - getLastModifyTimePerClass(jobClass));
+			}
+		}
+		if (arrivalMetric != null) {
+			arrivalMetric.update(list.size(), getTime() - getLastModifyTime());
 		}
 	}
 
@@ -1103,6 +1136,7 @@ public class LinkedJobInfoList implements JobInfoList {
 	public void renegeJob(JobInfo jobInfo) {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
+		updateArrivalMetric(jobInfo);
 		updateRenegingRate(jobInfo);
 		list.remove(jobInfo);
 		listPerClass[c].remove(jobInfo);

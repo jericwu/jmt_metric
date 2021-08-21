@@ -334,6 +334,9 @@ public class NetNode extends SimEntity {
 		case SimConstants.LIST_NUMBER_OF_JOBS:
 			jobsList.analyzeQueueLength(jobClass, measurement);
 			break;
+		case SimConstants.LIST_ARRIVAL_METRIC:
+			jobsList.analyzeArrivalMetric(jobClass, measurement);
+			break;
 		case SimConstants.LIST_RESPONSE_TIME:
 			jobsList.analyzeResponseTime(jobClass, measurement);
 			break;
@@ -848,7 +851,7 @@ public class NetNode extends SimEntity {
 	}
 
 	/**
-	 * @param true if this is a blocking region input station.
+	 * @param region if this is a blocking region input station.
 	 */
 	public void setBlockingRegionInputStation(BlockingRegion region) {
 		this.region = region;

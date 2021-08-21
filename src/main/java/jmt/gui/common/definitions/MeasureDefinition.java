@@ -157,6 +157,7 @@ public interface MeasureDefinition {
 	 */	
 	public int[] getQueueLengthMeasures();
 
+	public int[] getArrivalMetricMeasures();
 	/**
 	 * Returns an array with the measureIndex of every queue time measure
 	 * @return an array with measures' index
