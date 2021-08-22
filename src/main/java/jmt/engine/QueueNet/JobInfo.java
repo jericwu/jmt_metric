@@ -18,6 +18,8 @@
 
 package jmt.engine.QueueNet;
 
+import java.util.UUID;
+
 /**
  * This class is a generic job information storage class.
  * @see LinkedJobInfoList
@@ -27,6 +29,7 @@ public class JobInfo {
 
 	private Job job;
 	private double enteringTime;
+	private String jobId;
 
 	/**
 	 * Creates a new instance of JobInfo object.
@@ -35,6 +38,7 @@ public class JobInfo {
 	public JobInfo(Job job) {
 		this.job = job;
 		this.enteringTime = job.getNetSystem().getTime();
+		this.jobId = "ID-" + UUID.randomUUID();
 	}
 
 	/**
@@ -43,6 +47,10 @@ public class JobInfo {
 	 */
 	public Job getJob() {
 		return job;
+	}
+
+	public String getJobId() {
+		return this.jobId;
 	}
 
 	/**

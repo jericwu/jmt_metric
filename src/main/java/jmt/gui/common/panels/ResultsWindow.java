@@ -65,6 +65,9 @@ import jmt.gui.common.definitions.MeasureDefinition;
 import jmt.gui.common.definitions.ResultsConstants;
 import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.editors.StatisticalOutputsWindow;
+import org.apache.commons.lang.StringUtils;
+
+import static jmt.gui.common.definitions.SimulationDefinition.*;
 
 /**
  * <p>Title: Results Window</p>
@@ -145,7 +148,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		addTabPane(mainPanel, SimulationDefinition.MEASURE_QL, DESCRIPTION_QUEUE_LENGTH, results.getQueueLengthMeasures());
-		addTabPane(mainPanel, SimulationDefinition.MEASURE_AM, DESCRIPTION_ARRIVAL_METRIC, results.getArrivalMetricMeasures());
+		addTabPane(mainPanel, MEASURE_AM, DESCRIPTION_ARRIVAL_METRIC, results.getArrivalMetricMeasures());
 		addTabPane(mainPanel, SimulationDefinition.MEASURE_DM, DESCRIPTION_DEPARTURE_METRIC, results.getDepartureMetricMeasures());
 		addTabPane(mainPanel, SimulationDefinition.MEASURE_QT, DESCRIPTION_QUEUE_TIME, results.getQueueTimeMeasures());
 		addTabPane(mainPanel, SimulationDefinition.MEASURE_RP, DESCRIPTION_RESPONSE_TIME, results.getResponseTimeMeasures());
@@ -335,6 +338,9 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		protected Vector<MeasureValue> values;
 		protected JTextField samples;
 		protected JTextField mean;
+		protected JTextField jobId;
+		protected JTextField arrival;
+		protected JTextField departure;
 		protected JTextField lower;
 		protected JTextField upper;
 		protected JButton abortButton;
@@ -356,6 +362,61 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			addListeners();
 		}
 
+		private void createJobPanel(JPanel mainPanel){
+			JPanel jobPanel = new JPanel(new BorderLayout(7, 7));
+			JPanel jobLabels = null;
+			JPanel jobDetails = null;
+
+			JLabel lblJobId = new JLabel("Job ID: ");
+			jobId = new JTextField();
+			jobId.setEditable(false);
+			lblJobId.setLabelFor(jobId);
+			jobId.setText(values.lastElement().getJobId());
+			jobId.setToolTipText("Job ID: " + jobId.getText());
+
+			JLabel lblArrival = new JLabel("Upon Arrival: ");
+			arrival = new JTextField();
+			arrival.setEditable(false);
+			lblArrival.setLabelFor(arrival);
+			arrival.setText(String.valueOf(values.lastElement().getArrival()));
+			arrival.setToolTipText("Upon Arrival: " + arrival.getText());
+
+			JLabel lblDeparture = new JLabel("Upon Departure: ");
+			departure = new JTextField();
+			departure.setEditable(false);
+			lblDeparture.setLabelFor(departure);
+			departure.setText(String.valueOf(values.lastElement().getDeparture()));
+			departure.setToolTipText("Upon Departure: " + departure.getText());
+
+			if(MEASURE_AM.equals(md.getMeasureType(measureIndex))) {
+				jobLabels = new JPanel(new GridLayout(2, 1));
+				jobDetails = new JPanel(new GridLayout(2, 1));
+				jobLabels.add(lblJobId);
+				jobDetails.add(jobId);
+				jobLabels.add(lblArrival);
+				jobDetails.add(arrival);
+			} else if(MEASURE_DM.equals(md.getMeasureType(measureIndex))) {
+				jobLabels = new JPanel(new GridLayout(2, 1));
+				jobDetails = new JPanel(new GridLayout(2, 1));
+				jobLabels.add(lblJobId);
+				jobDetails.add(jobId);
+				jobLabels.add(lblDeparture);
+				jobDetails.add(departure);
+			} else if(MEASURE_QL.equals(md.getMeasureType(measureIndex))) {
+				jobLabels = new JPanel(new GridLayout(3, 1));
+				jobDetails = new JPanel(new GridLayout(3, 1));
+				jobLabels.add(lblJobId);
+				jobDetails.add(jobId);
+				jobLabels.add(lblArrival);
+				jobDetails.add(arrival);
+				jobLabels.add(lblDeparture);
+				jobDetails.add(departure);
+			}
+
+			jobPanel.add(jobLabels, BorderLayout.WEST);
+			jobPanel.add(jobDetails, BorderLayout.CENTER);
+			mainPanel.add(jobPanel, BorderLayout.SOUTH);
+		}
 		/**
 		 * Used to create the panel holding all measure's data
 		 */
@@ -477,11 +538,16 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			upper.setToolTipText("Maximum value of current confidence interval: " + upper.getText());
 			dataPanel.add(label);
 			dataPanel.add(upper);
-
 			SpringUtilities.makeCompactGrid(dataPanel, 3, 4, //rows, cols
 					2, 2, //initX, initY
 					2, 2);//xPad, yPad
 			mainPanel.add(dataPanel, BorderLayout.CENTER);
+
+			if(MEASURE_AM.equals(md.getMeasureType(measureIndex)) ||
+					MEASURE_DM.equals(md.getMeasureType(measureIndex)) ||
+					MEASURE_QL.equals(md.getMeasureType(measureIndex))) {
+				createJobPanel(mainPanel);
+			}
 
 			// Temp mean and abort button are in a separate panel
 			JPanel bottomPanel = new JPanel(new BorderLayout(7, 7));
@@ -646,7 +712,9 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 							lower.setText("-");
 							upper.setText("-");
 						}
-
+						jobId.setText(lastValue.getJobId());
+						arrival.setText(String.valueOf(lastValue.getArrival()));
+						departure.setText(String.valueOf(lastValue.getDeparture()));
 						mean.setText(doubleToString(lastValue.getMeanValue()));
 						mean.setToolTipText("Current mean value of this measure: " + mean.getText());
 						samples.setText("" + md.getAnalyzedSamples(measureIndex));

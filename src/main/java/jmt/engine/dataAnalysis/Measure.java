@@ -127,6 +127,12 @@ public class Measure {
 
 	protected double lastWeight;
 
+	protected String jobId;
+
+	protected int arrival;
+
+	protected int departure;
+
 	//-------end SCALE FACTOR FOR RESIDENCE TIME MEASURES------------//
 
 	/** Creates a new instance of measure class.
@@ -328,6 +334,26 @@ public class Measure {
 	 */
 	public int getMaxSamples() {
 		return analyzer.getMaxData();
+	}
+
+	public String getJobId() {
+		return this.jobId;
+	}
+
+	public int getArrival() {
+		return this.arrival;
+	}
+
+	public int getDeparture() {
+		return this.departure;
+	}
+
+	public synchronized void updateJobDetail(double sample, String jobId, int action) {
+		this.jobId = jobId;
+		if(action == 0)
+			arrival = (int)sample;
+		else if(action == 1)
+			departure = (int)sample;
 	}
 
 	/** Updates data. This method should be called to add a new sample to the

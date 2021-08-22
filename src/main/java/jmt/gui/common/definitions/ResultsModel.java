@@ -784,6 +784,9 @@ public class ResultsModel implements MeasureDefinition {
 		private double lower;
 		private double lastIntervalAvgValue;
 		private double simulationTime;
+		private String jobId;
+		private int arrival;
+		private int departure;
 
 		public MeasureValueImpl(TempMeasure tm) {
 			mean = tm.getTempMean();
@@ -791,6 +794,9 @@ public class ResultsModel implements MeasureDefinition {
 			lower = tm.getLowerBound();
 			lastIntervalAvgValue = tm.getLastIntervalAvgValue();
 			simulationTime= tm.getSimTime();
+			this.jobId = tm.getJobId();
+			this.arrival = tm.getArrival();
+			this.departure = tm.getDeparture();
 		}
 
 		public double getMeanValue() {
@@ -813,6 +819,17 @@ public class ResultsModel implements MeasureDefinition {
 			return simulationTime;
 		}
 
+		public String getJobId() {
+			return this.jobId;
+		}
+
+		public int getArrival() {
+			return this.arrival;
+		}
+
+		public int getDeparture() {
+			return this.departure;
+		}
 	}
 
 	/**

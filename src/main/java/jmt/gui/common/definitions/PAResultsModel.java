@@ -736,6 +736,21 @@ public class PAResultsModel implements MeasureDefinition {
 			return 0;
 		}
 
+		@Override
+		public String getJobId() {
+			return null;
+		}
+
+		@Override
+		public int getArrival() {
+			return 0;
+		}
+
+		@Override
+		public int getDeparture() {
+			return 0;
+		}
+
 	}
 
 	public void setMalformedReplayerFileListener(MalformedReplayerFileListener listener) {

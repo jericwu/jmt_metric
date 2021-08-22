@@ -73,6 +73,10 @@ public class TempMeasure {
 	private double simulationTime;
 	private String logFileName;
 
+	private String jobId;
+	private int arrival;
+	private int departure;
+
 	// --- end
 
 	/**
@@ -135,6 +139,9 @@ public class TempMeasure {
 			upperBound = measure.getUpperLimit();
 			lowerBound = measure.getLowerLimit();
 			lastIntervalAvgValue = measure.getLastIntervalAvgValue();
+			jobId = measure.getJobId();
+			arrival = measure.getArrival();
+			departure = measure.getDeparture();
 			simulationTime= measure.getSimTime(); 
 			finished = measure.hasFinished();
 			if (finished) {
@@ -225,4 +232,27 @@ public class TempMeasure {
 		return logFileName;
 	}
 
+	public int getArrival() {
+		return arrival;
+	}
+
+	public void setArrival(int arrival) {
+		this.arrival = arrival;
+	}
+
+	public int getDeparture() {
+		return departure;
+	}
+
+	public void setDeparture(int departure) {
+		this.departure = departure;
+	}
+
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
 }

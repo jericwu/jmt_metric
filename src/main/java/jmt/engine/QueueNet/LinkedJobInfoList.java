@@ -513,8 +513,9 @@ public class LinkedJobInfoList implements JobInfoList {
 	protected void updateAdd(JobInfo jobInfo) {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
-		updateArrivalMetric(jobInfo);
-		updateDepartureMetric(jobInfo);
+		updateJobDetail(jobInfo, 0);
+		//updateArrivalMetric(jobInfo);
+		//updateDepartureMetric(jobInfo);
 		updateUtilization(jobInfo);
 		updateUtilizationJoin(jobInfo);
 		jobsIn++;
@@ -538,13 +539,14 @@ public class LinkedJobInfoList implements JobInfoList {
 	public void removeOnly(JobInfo jobInfo) {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
-		updateArrivalMetric(jobInfo);
-		updateDepartureMetric(jobInfo);
+		//updateArrivalMetric(jobInfo);
+		//updateDepartureMetric(jobInfo);
 		updateUtilization(jobInfo);
 		updateUtilizationJoin(jobInfo);
 		updateThroughput(jobInfo);
 		finalRemove(jobInfo, list, 0);
 		finalRemove(jobInfo, listPerClass[c], 0);
+		updateJobDetail(jobInfo, 1);
 		jobsOut++;
 		jobsOutPerClass[c]++;
 		lastJobOutTime = getTime();
@@ -611,8 +613,8 @@ public class LinkedJobInfoList implements JobInfoList {
 	protected void doRemove(JobInfo jobInfo, int position, int perClassPosition) {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
-		updateArrivalMetric(jobInfo);
-		updateDepartureMetric(jobInfo);
+		//updateArrivalMetric(jobInfo);
+		//updateDepartureMetric(jobInfo);
 		updateResponseTime(jobInfo);
 		updateResidenceTime(jobInfo);
 		updateUtilization(jobInfo);
@@ -620,6 +622,7 @@ public class LinkedJobInfoList implements JobInfoList {
 		updateThroughput(jobInfo);
 		finalRemove(jobInfo, list, position);
 		finalRemove(jobInfo, listPerClass[c], perClassPosition);
+		updateJobDetail(jobInfo, 1);
 		jobsOut++;
 		jobsOutPerClass[c]++;
 		lastJobOutTime = getTime();
@@ -870,6 +873,27 @@ public class LinkedJobInfoList implements JobInfoList {
 		}		
 	}
 
+	protected void updateJobDetail(JobInfo jobInfo, int action) {
+		if (queueLengthPerClass != null) {
+			JobClass jobClass = jobInfo.getJob().getJobClass();
+			int c = jobClass.getId();
+			Measure m = queueLengthPerClass[c];
+			m.updateJobDetail(listPerClass[c].size(), jobInfo.getJobId(), action);
+		}
+		if (arrivalMetricPerClass != null) {
+			JobClass jobClass = jobInfo.getJob().getJobClass();
+			int c = jobClass.getId();
+			Measure m = arrivalMetricPerClass[c];
+			m.updateJobDetail(listPerClass[c].size(), jobInfo.getJobId(), action);
+		}
+
+		if (departureMetricPerClass != null) {
+			JobClass jobClass = jobInfo.getJob().getJobClass();
+			int c = jobClass.getId();
+			Measure m = departureMetricPerClass[c];
+			m.updateJobDetail(listPerClass[c].size(), jobInfo.getJobId(), action);
+		}
+	}
 	protected void updateQueueLength(JobInfo jobInfo) {
 		if (queueLengthPerClass != null) {
 			JobClass jobClass = jobInfo.getJob().getJobClass();
@@ -881,6 +905,30 @@ public class LinkedJobInfoList implements JobInfoList {
 		}
 		if (queueLength != null) {
 			queueLength.update(list.size(), getTime() - getLastModifyTime());
+		}
+
+		if (arrivalMetricPerClass != null) {
+			JobClass jobClass = jobInfo.getJob().getJobClass();
+			int c = jobClass.getId();
+			Measure m = arrivalMetricPerClass[c];
+			if (m != null) {
+				m.update(listPerClass[c].size(), getTime() - getLastModifyTimePerClass(jobClass));
+			}
+		}
+		if (arrivalMetric != null) {
+			arrivalMetric.update(list.size(), getTime() - getLastModifyTime());
+		}
+
+		if (departureMetricPerClass != null) {
+			JobClass jobClass = jobInfo.getJob().getJobClass();
+			int c = jobClass.getId();
+			Measure m = departureMetricPerClass[c];
+			if (m != null) {
+				m.update(listPerClass[c].size(), getTime() - getLastModifyTimePerClass(jobClass));
+			}
+		}
+		if (departureMetric != null) {
+			departureMetric.update(list.size(), getTime() - getLastModifyTime());
 		}
 	}
 
@@ -1169,10 +1217,12 @@ public class LinkedJobInfoList implements JobInfoList {
 	public void renegeJob(JobInfo jobInfo) {
 		int c = jobInfo.getJob().getJobClass().getId();
 		updateQueueLength(jobInfo);
-		updateArrivalMetric(jobInfo);
+		//updateArrivalMetric(jobInfo);
+		//updateDepartureMetric(jobInfo);
 		updateRenegingRate(jobInfo);
 		list.remove(jobInfo);
 		listPerClass[c].remove(jobInfo);
+		updateJobDetail(jobInfo, 1);
 		lastJobRenegingTime = getTime();
 		lastJobRenegingTimePerClass[c] = getTime();
 	}
