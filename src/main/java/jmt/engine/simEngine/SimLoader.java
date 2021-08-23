@@ -27,18 +27,17 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import com.google.gson.Gson;
 import jmt.common.exception.IncorrectDistributionParameterException;
 import jmt.common.exception.LoadException;
 import jmt.common.xml.XSDSchemaLoader;
 import jmt.engine.NetStrategies.ForkStrategy;
+import jmt.engine.NetStrategies.RoutingStrategies.ClassSwitchStrategy;
 import jmt.engine.NetStrategies.RoutingStrategy;
 import jmt.engine.NetStrategies.RoutingStrategies.EmpiricalStrategy;
 import jmt.engine.NetStrategies.RoutingStrategies.LoadDependentRoutingParameter;
@@ -77,10 +76,10 @@ import org.xml.sax.SAXNotSupportedException;
  *
  * @author Federico Granata, Stefano Omini, Bertoli Marco
  * @version 26-ago-2003 14.23.27
- *       
- * Modified by Ashanka (May 2010): 
- * Patch: Multi-Sink Perf. Index 
- * Description: Added new Performance index for capturing 
+ *
+ * Modified by Ashanka (May 2010):
+ * Patch: Multi-Sink Perf. Index
+ * Description: Added new Performance index for capturing
  * 				1. global response time (ResponseTime per Sink)
  *              2. global throughput (Throughput per Sink)
  *              each sink per class.
@@ -602,7 +601,7 @@ public class SimLoader {
 			throw new LoadException("Class of Section cannot be istantiated", e);
 		} catch (IllegalAccessException e) {
 			throw new LoadException("Class of Section illegal access", e);
-		} catch (NoSuchMethodException e) {			
+		} catch (NoSuchMethodException e) {
 			throw new LoadException("Constructor of Section not found", e);
 		} catch (InvocationTargetException e) {
 			throw new LoadException("problems with Section constructor", e);
@@ -859,12 +858,19 @@ public class SimLoader {
 				//needs to get the String constructor
 				Object[] initargs = { value };
 				Class<?>[] parameterTypes = { initargs[0].getClass() };
-				Constructor<?> constr = getConstructor(c, parameterTypes);
-				if (DEBUG) {
-					System.out.println("            created subParameter");
+				Object o;
+
+				if(c.getName().equals("java.util.Map")){
+					Gson gson = new Gson();
+					o = gson.fromJson(value, new HashMap().getClass());
+				} else {
+					Constructor<?> constr = getConstructor(c, parameterTypes);
+					if (DEBUG) {
+						System.out.println("            created subParameter");
+					}
+					o = constr.newInstance(initargs);
 				}
-				Object o = constr.newInstance(initargs);
-				
+
 				return o;
 			} else {
 				//leaf node but has subparameters
@@ -893,18 +899,18 @@ public class SimLoader {
 					SimSystem simSystem = sim.getSimSystem();
 					simSystem.add(n);
 					n.setSimSystem(simSystem);
-					
+
 					Burst b = (Burst) o; //any distribution will do?
 					b.setRandomEngine(sim.getNetSystem().getEngine());
 					b.initialize();
-					
+
 					sim.addDistrNetNode((NetNode) o);
 				}
 				if(o instanceof ForkStrategy){
 					((ForkStrategy)o).setRandomEngine(sim.getEngine());
 				}
 				if(o instanceof EmpiricalStrategy){
-					((EmpiricalStrategy)o).setRandomEngine(sim.getEngine());	
+					((EmpiricalStrategy)o).setRandomEngine(sim.getEngine());
 				}
 				if(o instanceof LoadDependentRoutingParameter){
 					((LoadDependentRoutingParameter)o).setRandomEngine(sim.getEngine());
@@ -912,7 +918,7 @@ public class SimLoader {
 				if(o instanceof LDParameter){
 					((LDParameter)o).setRandomEngine(sim.getEngine());
 				}
-				
+
 				return o;
 			}
 		} catch (ClassNotFoundException e) {

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 import jmt.common.exception.NetException;
+import jmt.engine.NetStrategies.RoutingStrategies.ClassSwitchStrategy;
 import jmt.engine.NetStrategies.RoutingStrategy;
 import jmt.engine.QueueNet.BlockingRegion;
 import jmt.engine.QueueNet.ForkJob;
@@ -53,7 +54,7 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Francesco Radaelli, Stefano Omini
  * @author Bertoli Marco - Fixed lockup issues with closed class and sinks 13/11/2005
  * @author Bertoli Marco - Fixed bug with multiserver stations
- * 
+ *
  * Modified by Ashanka (Oct 2009) for FCR Bug fix: Events are created with job instead of null for EVENT_JOB_OUT_OF_REGION
  */
 public class Router extends OutputSection {
@@ -153,63 +154,68 @@ public class Router extends OutputSection {
 	protected int process(NetMessage message) throws NetException {
 		switch (message.getEvent()) {
 
-		case NetEvent.EVENT_START:
-			break;
+			case NetEvent.EVENT_START:
+				break;
 
-		case NetEvent.EVENT_JOB:
+			case NetEvent.EVENT_JOB:
 
-			Job job = message.getJob();
+				Job job = message.getJob();
 
-			//EVENT_JOB
-			//if the router is not busy, an output node is chosen using
-			//the routing strategy and a message containing the job is sent to it.
+				//EVENT_JOB
+				//if the router is not busy, an output node is chosen using
+				//the routing strategy and a message containing the job is sent to it.
 
-			JobClass jobClass = job.getJobClass();
+				JobClass jobClass = job.getJobClass();
 
-			//choose the outNode using the corresponding routing strategy
-			NetNode outNode = routingStrategies[jobClass.getId()].getOutNode(this, jobClass);
-			// Bertoli Marco: sanity checks with closed classes and sinks were moved inside
-			// routing strategies
-
-			if (outNode == null) {
-				if (job instanceof ForkJob) {
-					outNode = outNodeList.get((int) Math.floor(randomEngine.raw() * outNodeList.size()));
+				NetNode outNode;
+				//choose the outNode using the corresponding routing strategy
+				if (routingStrategies[jobClass.getId()] instanceof ClassSwitchStrategy) {
+					outNode = ((ClassSwitchStrategy)routingStrategies[jobClass.getId()]).getOutClassSwitchNode(this, job);
 				} else {
-					showClosedJobRoutingWarning(jobClass);
-					break;
+					outNode = routingStrategies[jobClass.getId()].getOutNode(this, jobClass);
 				}
-			}
+				// Bertoli Marco: sanity checks with closed classes and sinks were moved inside
+				// routing strategies
 
-			//send the job to all nodes identified by the strategy
-			send(job, 0.0, outNode);
-
-			//Border router behaviour (used in case of blocking region)
-			if (borderRouterON) {
-				//the owner node of this router is inside the region: if the outNode is outside
-				//the region, it means that one job has left the blocking region so the region
-				//input station (its blocking router) must receive a particular message
-				if (!myRegion.belongsToRegion(outNode)) {
-					myRegion.decreaseOccupation(jobClass);
-					send(NetEvent.EVENT_JOB_OUT_OF_REGION, job, 0.0, NodeSection.INPUT, regionInputStation);
-					//Since now for blocking regions the job dropping is handles manually at node 
-					//level hence need to create events with Jobs ..Modified for FCR Bug Fix
+				if (outNode == null) {
+					if (job instanceof ForkJob) {
+						outNode = outNodeList.get((int) Math.floor(randomEngine.raw() * outNodeList.size()));
+					} else {
+						showClosedJobRoutingWarning(jobClass);
+						break;
+					}
 				}
-			}
-			break;
 
-		case NetEvent.EVENT_ACK:
+				//send the job to all nodes identified by the strategy
+				send(job, 0.0, outNode);
 
-			//EVENT_ACK
-			//An ack is sent back to the service section.
+				//Border router behaviour (used in case of blocking region)
+				if (borderRouterON) {
+					//the owner node of this router is inside the region: if the outNode is outside
+					//the region, it means that one job has left the blocking region so the region
+					//input station (its blocking router) must receive a particular message
+					if (!myRegion.belongsToRegion(outNode)) {
+						myRegion.decreaseOccupation(jobClass);
+						send(NetEvent.EVENT_JOB_OUT_OF_REGION, job, 0.0, NodeSection.INPUT, regionInputStation);
+						//Since now for blocking regions the job dropping is handles manually at node
+						//level hence need to create events with Jobs ..Modified for FCR Bug Fix
+					}
+				}
+				break;
 
-			sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
-			break;
+			case NetEvent.EVENT_ACK:
 
-		case NetEvent.EVENT_STOP:
-			break;
+				//EVENT_ACK
+				//An ack is sent back to the service section.
 
-		default:
-			return MSG_NOT_PROCESSED;
+				sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
+				break;
+
+			case NetEvent.EVENT_STOP:
+				break;
+
+			default:
+				return MSG_NOT_PROCESSED;
 		}
 
 		return MSG_PROCESSED;
@@ -237,8 +243,8 @@ public class Router extends OutputSection {
 						} catch (InterruptedException e) {
 						}
 						JOptionPane.showMessageDialog(null, getOwnerNode().getName()
-								+ " could not route one or more " + jobClass.getName()
-								+ " jobs forward as its output stations are all sinks or routing is disabled.",
+										+ " could not route one or more " + jobClass.getName()
+										+ " jobs forward as its output stations are all sinks or routing is disabled.",
 								"JSIMengine - Warning", JOptionPane.WARNING_MESSAGE);
 					}
 				}

@@ -41,6 +41,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.google.gson.Gson;
 import jmt.common.xml.XSDSchemaLoader;
 import jmt.engine.NetStrategies.ImpatienceStrategies.*;
 import jmt.engine.log.JSimLogger;
@@ -1035,6 +1036,18 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 				values = ((Element) child).getElementsByTagName(XML_E_PARAMETER_VALUE);
 				Boolean withMemory = Boolean.valueOf(findText(values.item(0)));
 				strategy.setWithMemory(withMemory);
+			} else if (rs instanceof ClassSwitchRouting) {
+				ClassSwitchRouting strategy = (ClassSwitchRouting) rs;
+				Node child = routing.get(className2).getFirstChild();
+				while (child.getNodeType() != Node.ELEMENT_NODE || !child.getNodeName().equals(XML_E_SUBPARAMETER)) {
+					child = child.getNextSibling();
+				}
+				NodeList values = ((Element) child).getElementsByTagName(XML_E_PARAMETER_VALUE);
+				// TODO: read & write Map<Object, Map<Object, Double>>
+				Gson gson = new Gson();
+				Map<Object, Map<Object, Double>> outPaths = new HashMap<Object, Map<Object, Double>>();
+				outPaths = gson.fromJson(findText(values.item(0)), outPaths.getClass());
+				strategy.setOutPaths(outPaths);
 			} else if (rs instanceof WeightedRoundRobinRouting) {
 				Vector<Node> entries = new Vector<>();
 				Node entryArray = routing.get(className2).getFirstChild();

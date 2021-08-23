@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import com.google.gson.Gson;
 import jmt.engine.NetStrategies.ImpatienceStrategies.*;
 import jmt.gui.common.forkStrategies.ForkStrategy;
 import jmt.gui.common.forkStrategies.OutPath;
@@ -2005,6 +2006,12 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 				XMLParameter param1 = new XMLParameter("k", Integer.class.getName(), null, k.toString(), true);
 				XMLParameter param2 = new XMLParameter("withMemory", Boolean.class.getName(), null, withMemory.toString(), true);
 				innerRoutingPar = new XMLParameter[] { param1, param2 };
+			} else if (routingStrat instanceof ClassSwitchRouting) {
+				ClassSwitchRouting rs = ((ClassSwitchRouting) routingStrat);
+				Map<Object, Map<Object, Double>> outPaths = rs.getOutPaths();
+				Gson gson = new Gson();
+				XMLParameter param = new XMLParameter("outPaths", Map.class.getName(), null, gson.toJson(outPaths), true);
+				innerRoutingPar = new XMLParameter[] { param };
 			} else if (routingStrat instanceof WeightedRoundRobinRouting) {
 				Vector<Object> outputs = model.getForwardConnections(stationKey);
 				Map<Object, Integer> values = ((WeightedRoundRobinRouting) routingStrat).getWeights();
