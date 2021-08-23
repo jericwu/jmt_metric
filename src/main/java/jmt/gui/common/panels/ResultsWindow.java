@@ -715,9 +715,15 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 							lower.setText("-");
 							upper.setText("-");
 						}
-						jobId.setText(lastValue.getJobId());
-						arrival.setText(String.valueOf(lastValue.getArrival()));
-						departure.setText(String.valueOf(lastValue.getDeparture()));
+
+						if(MEASURE_AM.equals(md.getMeasureType(measureIndex)) ||
+								MEASURE_DM.equals(md.getMeasureType(measureIndex)) ||
+								MEASURE_QL.equals(md.getMeasureType(measureIndex))) {
+							jobId.setText(lastValue.getJobId());
+							arrival.setText(String.valueOf(lastValue.getArrival()));
+							departure.setText(String.valueOf(lastValue.getDeparture()));
+						}
+
 						mean.setText(doubleToString(lastValue.getMeanValue()));
 						mean.setToolTipText("Current mean value of this measure: " + mean.getText());
 						samples.setText("" + md.getAnalyzedSamples(measureIndex));
