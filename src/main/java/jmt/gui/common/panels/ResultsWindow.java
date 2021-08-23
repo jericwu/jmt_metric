@@ -374,6 +374,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 				jobDetails.add(jobId);
 				jobLabels.add(lblArrival);
 				jobDetails.add(arrival);
+				jobPanel.add(jobLabels, BorderLayout.WEST);
+				jobPanel.add(jobDetails, BorderLayout.CENTER);
 			} else if(MEASURE_DM.equals(md.getMeasureType(measureIndex))) {
 				jobLabels = new JPanel(new GridLayout(2, 1));
 				jobDetails = new JPanel(new GridLayout(2, 1));
@@ -381,6 +383,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 				jobDetails.add(jobId);
 				jobLabels.add(lblDeparture);
 				jobDetails.add(departure);
+				jobPanel.add(jobLabels, BorderLayout.WEST);
+				jobPanel.add(jobDetails, BorderLayout.CENTER);
 			} else if(MEASURE_QL.equals(md.getMeasureType(measureIndex))) {
 				if ("Arrival & Departure".equalsIgnoreCase(state)) {
 					jobLabels = new JPanel(new GridLayout(3, 1));
@@ -391,6 +395,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 					jobDetails.add(arrival);
 					jobLabels.add(lblDeparture);
 					jobDetails.add(departure);
+					jobPanel.add(jobLabels, BorderLayout.WEST);
+					jobPanel.add(jobDetails, BorderLayout.CENTER);
 				} else if ("Arrival".equalsIgnoreCase(state)) {
 					jobLabels = new JPanel(new GridLayout(2, 1));
 					jobDetails = new JPanel(new GridLayout(2, 1));
@@ -398,6 +404,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 					jobDetails.add(jobId);
 					jobLabels.add(lblArrival);
 					jobDetails.add(arrival);
+					jobPanel.add(jobLabels, BorderLayout.WEST);
+					jobPanel.add(jobDetails, BorderLayout.CENTER);
 				} else if ("Departure".equalsIgnoreCase(state)) {
 					jobLabels = new JPanel(new GridLayout(2, 1));
 					jobDetails = new JPanel(new GridLayout(2, 1));
@@ -405,11 +413,11 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 					jobDetails.add(jobId);
 					jobLabels.add(lblDeparture);
 					jobDetails.add(departure);
+					jobPanel.add(jobLabels, BorderLayout.WEST);
+					jobPanel.add(jobDetails, BorderLayout.CENTER);
 				}
 			}
 
-			jobPanel.add(jobLabels, BorderLayout.WEST);
-			jobPanel.add(jobDetails, BorderLayout.CENTER);
 			mainPanel.add(jobPanel, BorderLayout.SOUTH);
 		}
 		/**
