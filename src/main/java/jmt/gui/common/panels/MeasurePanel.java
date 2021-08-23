@@ -62,6 +62,7 @@ import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.definitions.StationDefinition;
 import jmt.gui.common.editors.ImagedComboBoxCellEditorFactory;
 import jmt.gui.exact.table.BooleanCellRenderer;
+import jmt.gui.exact.table.ComboBoxCell;
 import jmt.gui.exact.table.DisabledCellRenderer;
 import jmt.gui.exact.table.ExactCellEditor;
 
@@ -146,6 +147,13 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 			SimulationDefinition.MEASURE_RS,
 			SimulationDefinition.MEASURE_OT,
 			SimulationDefinition.MEASURE_X_PER_SINK
+	};
+
+	protected static final String[] states = new String[] {
+			"None",
+			"Arrival",
+			"Departure",
+			"Arrival & Departure",
 	};
 
 	// Measure selection ComboBox
@@ -415,8 +423,13 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 			Object key = simData.getMeasureKeys().get(row);
 			Measure measure = getExplicitMeasure(simData.getMeasureType(key),
 					simData.getMeasureStation(key), simData.getMeasureClass(key));
-			if (column == 6) {
+			if (column == 7) {
 				return new ButtonCellEditor(deleteButton);
+			} else if (column == 6) {
+				ComboBoxCell cbc = new ComboBoxCell(states);
+				if(!SimulationDefinition.MEASURE_QL.equalsIgnoreCase(measure.type))
+					cbc.getComboBox().setEnabled(false);
+				return cbc;
 			} else if (column == 2) {
 				if (measure.type.equals(SimulationDefinition.MEASURE_QL)
 						|| measure.type.equals(SimulationDefinition.MEASURE_AM)
@@ -484,8 +497,13 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 			Object key = simData.getMeasureKeys().get(row);
 			Measure measure = getExplicitMeasure(simData.getMeasureType(key),
 					simData.getMeasureStation(key), simData.getMeasureClass(key));
-			if (column == 6) {
+			if (column == 7) {
 				return new ButtonCellEditor(deleteButton);
+			} else if (column == 6) {
+				ComboBoxCell cbc = new ComboBoxCell(states);
+				if(!SimulationDefinition.MEASURE_QL.equalsIgnoreCase(measure.type))
+					cbc.getComboBox().setEnabled(false);
+				return cbc;
 			} else if (column == 3) {
 				return new BooleanCellRenderer();
 			} else if (column == 2) {
@@ -511,9 +529,9 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 
 		private static final long serialVersionUID = 1L;
 
-		private String[] columnNames = new String[] { "Performance Index", "Class/Mode", "Station/Region/System", "Stat.Res.", "Conf.Int.", "Max Rel.Err.", "" };
-		private Class<?>[] columnClasses = new Class[] { String.class, String.class, String.class, Boolean.class, Double.class, Double.class, Object.class };
-		public int[] columnWidths = new int[] { 120, 80, 120, 30, 60, 60, 20 };
+		private String[] columnNames = new String[] { "Performance Index", "Class/Mode", "Station/Region/System", "Stat.Res.", "Conf.Int.", "Max Rel.Err.", "Arr./Dep.", "" };
+		private Class<?>[] columnClasses = new Class[] { String.class, String.class, String.class, Boolean.class, Double.class, Double.class, String.class, Object.class };
+		public int[] columnWidths = new int[] { 120, 80, 120, 30, 60, 60, 60, 20 };
 
 		public int getRowCount() {
 			return simData.getMeasureKeys().size();
@@ -559,6 +577,8 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 				return simData.getMeasureAlpha(key);
 			case 5: 
 				return simData.getMeasurePrecision(key);
+			case 6:
+				return simData.getMeasureState(key);
 			}
 			return null;
 		}
@@ -606,7 +626,11 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 				} catch (NumberFormatException e) {
 				}
 				break;
+			case 6:
+				simData.setMeasureState(String.valueOf(aValue), key);
+				break;
 			}
+
 		}
 
 	}

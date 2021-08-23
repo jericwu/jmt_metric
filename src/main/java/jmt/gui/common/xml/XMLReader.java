@@ -2040,6 +2040,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		Object stationKey, classKey;
 		String type;
 		Double alpha, precision;
+		String state;
 		for (int i = 0; i < measures.getLength(); i++) {
 			Element measure = (Element) measures.item(i);
 			String stationName = measure.getAttribute(XML_A_MEASURE_STATION);
@@ -2067,12 +2068,13 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			}
 			//Inverts alpha
 			alpha = new Double(1 - Double.parseDouble(measure.getAttribute(XML_A_MEASURE_ALPHA)));
+			state =  measure.getAttribute(XML_A_MEASURE_STATE);
 			precision = Double.valueOf(measure.getAttribute(XML_A_MEASURE_PRECISION));
 			String verboseStr = measure.getAttribute(XML_A_MEASURE_VERBOSE);
 			boolean verbose = Boolean.parseBoolean(verboseStr);
 
 			//Adds measure to the model
-			model.addMeasure(type, stationKey, classKey, alpha, precision, verbose);
+			model.addMeasure(type, stationKey, classKey, alpha, precision, verbose, state);
 		}
 	}
 

@@ -70,6 +70,7 @@ public interface XMLConstantNames {
 	public static final String XML_E_MEASURE = "measure";
 	public static final String XML_A_MEASURE_NAME = "name";
 	public static final String XML_A_MEASURE_ALPHA = "alpha";
+	public static final String XML_A_MEASURE_STATE = "state";
 	public static final String XML_A_MEASURE_PRECISION = "precision";
 	public static final String XML_A_MEASURE_VERBOSE = "verbose";
 	public static final String XML_A_MEASURE_TYPE = "type";

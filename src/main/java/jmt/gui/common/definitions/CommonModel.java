@@ -2599,17 +2599,17 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 */
 	@Override
 	public Object addMeasure(String type, Object stationKey, Object classKey) {
-		return addMeasure(type, stationKey, classKey, Defaults.getAsDouble("measureAlpha"), Defaults.getAsDouble("measurePrecision"), false);
+		return addMeasure(type, stationKey, classKey, Defaults.getAsDouble("measureAlpha"), Defaults.getAsDouble("measurePrecision"), false, null);
 	}
 
 	/* (non-Javadoc)
 	 * @see jmt.gui.common.definitions.SimulationDefinition#addMeasure(java.lang.String, java.lang.Object, java.lang.Object, java.lang.Double, java.lang.Double, boolean)
 	 */
 	@Override
-	public Object addMeasure(String type, Object stationKey, Object classKey, Double alpha, Double precision, boolean log) {
+	public Object addMeasure(String type, Object stationKey, Object classKey, Double alpha, Double precision, boolean log, String state) {
 		Object key = new Long(++incrementalKey);
 		measuresKeyset.add(key);
-		MeasureData md = new MeasureData(type, stationKey, classKey, alpha, precision, log);
+		MeasureData md = new MeasureData(type, stationKey, classKey, alpha, precision, log, state);
 		measureDataHM.put(key, md);
 		save = true;
 		return key;
@@ -2645,6 +2645,26 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	@Override
 	public Vector<Object> getMeasureKeys() {
 		return measuresKeyset;
+	}
+
+	@Override
+	public String getMeasureState(Object measureKey) {
+		if (!measuresKeyset.contains(measureKey)) {
+			return null;
+		} else {
+			return measureDataHM.get(measureKey).state;
+		}
+	}
+
+	@Override
+	public void setMeasureState(String newState, Object measureKey) {
+		if (measuresKeyset.contains(measureKey)) {
+			String oldState = measureDataHM.get(measureKey).state;
+			measureDataHM.get(measureKey).state = newState;
+			if (!oldState.equals(newState)) {
+				save = true;
+			}
+		}
 	}
 
 	@Override
@@ -4221,14 +4241,16 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		public Double precision;
 		public Double alpha;
 		public boolean log;
+		public String state;
 
-		public MeasureData(String type, Object stationKey, Object classKey, Double alpha, Double precision, boolean log) {
+		public MeasureData(String type, Object stationKey, Object classKey, Double alpha, Double precision, boolean log, String state) {
 			this.type = type;
 			this.stationKey = stationKey;
 			this.classKey = classKey;
 			this.precision = precision;
 			this.alpha = alpha;
 			this.log = log;
+			this.state = state;
 		}
 	}
 

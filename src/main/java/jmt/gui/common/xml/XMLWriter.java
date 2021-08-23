@@ -1493,8 +1493,10 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 
 			// Inverts alpha and keeps only 10 decimal cifres
 			double alpha = 1 - model.getMeasureAlpha(key).doubleValue();
+			String state = model.getMeasureState(key);
 			alpha = Math.rint(alpha * 1e10) / 1e10;
 			elem.setAttribute(XML_A_MEASURE_ALPHA, Double.toString(alpha));
+			elem.setAttribute(XML_A_MEASURE_STATE, state);
 			elem.setAttribute(XML_A_MEASURE_PRECISION, model.getMeasurePrecision(key).toString());
 			elem.setAttribute(XML_A_MEASURE_NAME, name);
 			elem.setAttribute(XML_A_MEASURE_VERBOSE, Boolean.toString(model.getMeasureLog(key)));

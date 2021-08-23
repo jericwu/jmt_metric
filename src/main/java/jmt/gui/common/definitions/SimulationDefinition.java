@@ -138,7 +138,7 @@ public interface SimulationDefinition {
 	 * @param log: true to log the measure to CSV. False to avoid it.
 	 * @return search key for new measure
 	 */
-	public Object addMeasure(String type, Object stationKey, Object classKey, Double alpha, Double precision, boolean log);
+	public Object addMeasure(String type, Object stationKey, Object classKey, Double alpha, Double precision, boolean log, String state);
 
 	/**
 	 * Removes a measure from list, given its search key
@@ -235,6 +235,10 @@ public interface SimulationDefinition {
 	 * @param measureKey the key of the measure
 	 */
 	public void setMeasureLog(boolean log, Object measureKey);
+
+	public String getMeasureState(Object measureKey);
+
+	public void setMeasureState(String state, Object measureKey);
 
 	/**
 	 * Tells if a given measure is global

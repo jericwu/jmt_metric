@@ -19,39 +19,6 @@
 
 package jmt.gui.common.panels;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.File;
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Vector;
-
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.SpringLayout;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
-
 import jmt.engine.log.JSimLogger;
 import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.graph.FastGraph;
@@ -65,7 +32,17 @@ import jmt.gui.common.definitions.MeasureDefinition;
 import jmt.gui.common.definitions.ResultsConstants;
 import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.editors.StatisticalOutputsWindow;
-import org.apache.commons.lang.StringUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Vector;
 
 import static jmt.gui.common.definitions.SimulationDefinition.*;
 
@@ -363,6 +340,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		}
 
 		private void createJobPanel(JPanel mainPanel){
+			String state = sd.getMeasureState(sd.getMeasureKeys().get(measureIndex));
+
 			JPanel jobPanel = new JPanel(new BorderLayout(7, 7));
 			JPanel jobLabels = null;
 			JPanel jobDetails = null;
@@ -403,14 +382,30 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 				jobLabels.add(lblDeparture);
 				jobDetails.add(departure);
 			} else if(MEASURE_QL.equals(md.getMeasureType(measureIndex))) {
-				jobLabels = new JPanel(new GridLayout(3, 1));
-				jobDetails = new JPanel(new GridLayout(3, 1));
-				jobLabels.add(lblJobId);
-				jobDetails.add(jobId);
-				jobLabels.add(lblArrival);
-				jobDetails.add(arrival);
-				jobLabels.add(lblDeparture);
-				jobDetails.add(departure);
+				if ("Arrival & Departure".equalsIgnoreCase(state)) {
+					jobLabels = new JPanel(new GridLayout(3, 1));
+					jobDetails = new JPanel(new GridLayout(3, 1));
+					jobLabels.add(lblJobId);
+					jobDetails.add(jobId);
+					jobLabels.add(lblArrival);
+					jobDetails.add(arrival);
+					jobLabels.add(lblDeparture);
+					jobDetails.add(departure);
+				} else if ("Arrival".equalsIgnoreCase(state)) {
+					jobLabels = new JPanel(new GridLayout(2, 1));
+					jobDetails = new JPanel(new GridLayout(2, 1));
+					jobLabels.add(lblJobId);
+					jobDetails.add(jobId);
+					jobLabels.add(lblArrival);
+					jobDetails.add(arrival);
+				} else if ("Departure".equalsIgnoreCase(state)) {
+					jobLabels = new JPanel(new GridLayout(2, 1));
+					jobDetails = new JPanel(new GridLayout(2, 1));
+					jobLabels.add(lblJobId);
+					jobDetails.add(jobId);
+					jobLabels.add(lblDeparture);
+					jobDetails.add(departure);
+				}
 			}
 
 			jobPanel.add(jobLabels, BorderLayout.WEST);
