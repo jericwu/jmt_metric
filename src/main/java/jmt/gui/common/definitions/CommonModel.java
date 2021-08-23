@@ -61,6 +61,7 @@ import jmt.gui.common.semaphoreStrategies.SemaphoreStrategy;
 import jmt.gui.common.serviceStrategies.ServiceStrategy;
 import jmt.gui.common.serviceStrategies.ZeroStrategy;
 import jmt.gui.common.transitionUtilities.TransitionMatrix;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Created by IntelliJ IDEA.
@@ -2669,7 +2670,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		if (measuresKeyset.contains(measureKey)) {
 			String oldState = measureDataHM.get(measureKey).state;
 			measureDataHM.get(measureKey).state = newState;
-			if (!oldState.equals(newState)) {
+			if (!StringUtils.isEmpty(oldState) && !oldState.equals(newState)) {
 				save = true;
 			}
 		}

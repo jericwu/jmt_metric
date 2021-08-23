@@ -878,20 +878,26 @@ public class LinkedJobInfoList implements JobInfoList {
 			JobClass jobClass = jobInfo.getJob().getJobClass();
 			int c = jobClass.getId();
 			Measure m = queueLengthPerClass[c];
-			m.updateJobDetail(listPerClass[c].size(), jobInfo.getJobId(), action);
+			if(m != null) {
+				m.updateJobDetail(listPerClass[c].size(), jobInfo.getJobId(), action);
+			}
 		}
 		if (arrivalMetricPerClass != null) {
 			JobClass jobClass = jobInfo.getJob().getJobClass();
 			int c = jobClass.getId();
 			Measure m = arrivalMetricPerClass[c];
-			m.updateJobDetail(listPerClass[c].size(), jobInfo.getJobId(), action);
+			if(m != null) {
+				m.updateJobDetail(listPerClass[c].size(), jobInfo.getJobId(), action);
+			}
 		}
 
 		if (departureMetricPerClass != null) {
 			JobClass jobClass = jobInfo.getJob().getJobClass();
 			int c = jobClass.getId();
 			Measure m = departureMetricPerClass[c];
-			m.updateJobDetail(listPerClass[c].size(), jobInfo.getJobId(), action);
+			if(m != null) {
+				m.updateJobDetail(listPerClass[c].size(), jobInfo.getJobId(), action);
+			}
 		}
 	}
 	protected void updateQueueLength(JobInfo jobInfo) {
