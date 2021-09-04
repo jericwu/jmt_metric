@@ -432,8 +432,6 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 				return cbc;
 			} else if (column == 2) {
 				if (measure.type.equals(SimulationDefinition.MEASURE_QL)
-						|| measure.type.equals(SimulationDefinition.MEASURE_AM)
-						|| measure.type.equals(SimulationDefinition.MEASURE_DM)
 						|| measure.type.equals(SimulationDefinition.MEASURE_RP)
 						|| measure.type.equals(SimulationDefinition.MEASURE_DR)
 						|| measure.type.equals(SimulationDefinition.MEASURE_RR)
@@ -445,6 +443,8 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 					vector.removeAll(stationData.getStationKeysTransition());					
 					return stationsCombos.getEditor(vector);
 				} else if (measure.type.equals(SimulationDefinition.MEASURE_QT)
+						|| measure.type.equals(SimulationDefinition.MEASURE_AM)
+						|| measure.type.equals(SimulationDefinition.MEASURE_DM)
 						|| measure.type.equals(SimulationDefinition.MEASURE_RD)
 						|| measure.type.equals(SimulationDefinition.MEASURE_U)
 						//|| measure.type.equals(SimulationDefinition.MEASURE_BS)						
